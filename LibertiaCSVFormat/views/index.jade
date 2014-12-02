@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  form(name="uploader", action="/upload", method="post", enctype="multipart/form-data")   
+    select(name="bank")
+     each bank, i in banks
+      option(value=i) Banco #{bank}
+    input(type="file", name="file", id="file")
+    input(type="submit", value="Upload")
