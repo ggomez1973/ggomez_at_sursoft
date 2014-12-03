@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Parser Libertya', banks: ["Credicoop", "Macro", "Rio"] });
+  res.render('index', { title: 'Generación de archivos de importación de extractos bancarios para Libertya ERP', banks: ["Credicoop", "Macro", "Rio"] });
 });
 
 router.get('/:file(*)', function(req, res) {
