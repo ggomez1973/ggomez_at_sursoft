@@ -82,33 +82,35 @@ function parse_rio(data, csvStream){
     // @TODO
 };
 function parse(bank, filename, callback){
-    var fs = require('fs');
-    var parse = require('csv-parse');
-    var csv = require("fast-csv");
+    if(bank === '2'){ // Rio es un excel, no un CSV
+        var ww = require('xlsjs').readFile(__dirname+'/temp/'+filename);
+        console.log(ww);
+    } else {
+        var fs = require('fs');
+        var parse = require('csv-parse');
+        var csv = require("fast-csv");
 
-    var csvStream = csv.createWriteStream({headers: true}),
-    writableStream = fs.createWriteStream(__dirname+'/parsed/libertya_'+filename);
+        var csvStream = csv.createWriteStream({headers: true}),
+        writableStream = fs.createWriteStream(__dirname+'/parsed/libertya_'+filename);
 
-    writableStream.on("finish", function(){
-      return callback(null, "Done!")
-    });
-    csvStream.pipe(writableStream);
+        writableStream.on("finish", function(){
+          return callback(null, "Done!")
+        });
+        csvStream.pipe(writableStream);
 
-    var parser = parse({delimiter: ','}, function(err, data){
-        switch(bank){
-            case '0': // Credicoop
-                parse_credicoop(data, csvStream);
-                break;
-            case '1': // Macro
-                parse_macro(data, csvStream);
-                break;
-            case '2': // Rio
-                parse_rio(data, csvStream);
-                break;
-        }
-        csvStream.end();
-    });
-    fs.createReadStream(__dirname+'/temp/'+filename).pipe(parser);
+        var parser = parse({delimiter: ','}, function(err, data){
+            switch(bank){
+                case '0': // Credicoop
+                    parse_credicoop(data, csvStream);
+                    break;
+                case '1': // Macro
+                    parse_macro(data, csvStream);
+                    break;
+            }
+            csvStream.end();
+        });
+        fs.createReadStream(__dirname+'/temp/'+filename).pipe(parser);
+    }
 };
 // error handlers
 // development error handler
