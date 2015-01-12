@@ -74,15 +74,35 @@ function parse_macro(data, csvStream){
         csvStream.write(credilinea);
     };
 };
+function parse_chubut(data, csvStream){
+    var converter = require("xls-to-json");  
+	var res = {};  
+	converter({  
+  		input: __dirname+'/extractos/CHUBUT.xls',
+  		output: null
+	}, function(err, result) {
+		if(err) {
+    		console.error(err);
+  		} else {
+		    for (var key = 0; key < result.length; key++) {
+		    	var concepto = result[key]['Nro. Comprobante'].substring(2,14)+'-'+result[key]['Concepto'];
+    			var importe = result[key]['Importe'];
+    			var fecha = result[key]['Fecha / Hora Mov.'].substring(0,10).replace(/\//g,"-");;
+    			var credilinea = { Fecha: fecha, Concepto: concepto, Importe: importe};
+				res[key] = credilinea;
+		    };
+		    console.log(res);
+  		}
+	});
+};
+
 function getMonth(month){
     var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
     return months.indexOf(month)+1;
 }
-function parse_rio(data, csvStream){
-    // @TODO
-};
+
 function parse(bank, filename, callback){
-    if(bank === '2'){ // Rio es un excel, no un CSV
+    if(bank === '2'){ // CHUBUT es un excel, no un CSV
         var ww = require('xlsjs').readFile(__dirname+'/temp/'+filename);
         console.log(ww);
     } else {
